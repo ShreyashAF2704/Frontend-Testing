@@ -55,6 +55,7 @@ export default function Formdata() {
 
 
   const FetchData2 = async () =>{
+	  setquestionArr([])
     var myHeaders = new Headers();
 	myHeaders.append("Accept", "application/json");
 	myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem('access_token')}`);
@@ -112,6 +113,7 @@ export default function Formdata() {
 	  .then(result => JSON.parse(result))
 	  .then(res =>{
 		setdata(res)
+		setanswer("")
 		return res
 	  })
 	  .then(res=> console.log(res))
@@ -179,7 +181,7 @@ export default function Formdata() {
 			   <p>Possible Problems -</p>
 			   {Object.keys(ele_.results).map((ele,i)=>{
 				return (
-				  <p>{ele} - {ele_.results[ele]}</p>
+				  <p>{ele} - {ele_.results[ele]}%</p>
 				)
 			   })}
 			</>)
@@ -190,29 +192,57 @@ export default function Formdata() {
 	<hr></hr>
     <hr></hr>
    {sucess && data.results != undefined &&(
-   <><h3>Question- ({data.question_id}) {data.next_question} </h3>
-   <p>Possible Problems -</p>
-   {Object.keys(data.results).map((ele,i)=>{
-    return (
-      <p>{ele} - {data.results[ele]}</p>
-    )
-   })}
+	   <>
+	   { data.question_id === -1 &&(
+	        <>
+			<h3>Answer-</h3>
+			<p>Possible Problems -</p>
+			   {Object.keys(data.results).map((ele,i)=>{
+				return (
+				  <p>{ele} - {data.results[ele]}%</p>
+				)
+			   })}
+			</>
+	   )}
+	   {
+		  data.question_id !== -1 &&(
+		  <>
+		  <h3>Question- ({data.question_id}) {data.next_question} </h3>
+			 <p>Possible Problems -</p>
+			   {Object.keys(data.results).map((ele,i)=>{
+				return (
+				  <p>{ele} - {data.results[ele]}%</p>
+				)
+			   })}
+			 <Form.Group className="mb-3" controlId="formBasicEmail">
+				<Form.Label>Answer</Form.Label>
+				<Form.Control type="text"  value={answer} onChange={(e) => setanswer(e.target.value)} placeholder="Enter Answer for this question" />
+			  </Form.Group>
+		   
 
-   <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Answer</Form.Label>
-        <Form.Control type="text"  value={answer} onChange={(e) => setanswer(e.target.value)} placeholder="Enter Answer for this question" />
-      </Form.Group>
+			<Button variant="primary" type="submit" onClick={submitAnswer}>
+			Submit answer
+			</Button>
+		  </>
+		  )
+	   }
+	   
+	   
+	   
+		     
+		   </>
+		   )
+		   
+	   }
+	  	   
+	   
+	   
+
+      
+
    
-
-    <Button variant="primary" type="submit" onClick={submitAnswer}>
-    Submit answer
-    </Button>
-
-    {sucess2 && (
-      <p>{data2.next_question}</p>
-    )}
-</> 
-   )}
+	
+    
     </Container>
   )
 }
